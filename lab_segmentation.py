@@ -1,4 +1,5 @@
 # Import libraries
+from turtle import mode
 import cv2
 import numpy as np
 from scipy.spatial import distance
@@ -12,7 +13,12 @@ def run_segmentation_lab():
     # Set parameters.
     use_otsu = False                        # Use Otsu's method to estimate threshold automatically.
     use_adaptive_model = False              # Use adaptive method to gradually update the model continuously.
+
+    # adjusting the update ratio to see effects
     adaptive_update_ratio = 0.1             # Update ratio for adaptive method.
+    #adaptive_update_ratio = 0.5
+    #adaptive_update_ratio = 0.9
+    
     max_distance = 20                       # Maximum Mahalanobis distance we represent (in slider and uint16 image).
     initial_thresh_val = 8                  # Initial value for threshold.
     model_type = MultivariateNormalModel    # Set feature model (this is the only one available now).
@@ -63,10 +69,13 @@ def run_segmentation_lab():
             # Extract features.
             feature_image = extract_features(frame)
 
+            # adaptive update modes
+            mode = "shuffle" # "basic", "random", or "shuffle"
+
             # Update if using adaptive model
-            if use_adaptive_model:
+            if use_adaptive_model: 
                 new_samples = extract_training_samples(feature_image, sampling_rectangle)
-                update_samples(samples, new_samples, adaptive_update_ratio)
+                update_samples(samples, new_samples, adaptive_update_ratio, mode=mode)
                 model = model_type(samples)
 
             # Compute how well the pixel features fit with the model.
@@ -105,7 +114,7 @@ def run_segmentation_lab():
 
             elif key == ord('a'):
                 use_adaptive_model = not use_adaptive_model
-                print(f"Use adaptive model: {use_adaptive_model}")
+                print(f"Use adaptive model: {use_adaptive_model}. Current update sample mode: {mode}")
 
     # Stop video source.
     cap.release()
@@ -154,7 +163,7 @@ class MultivariateNormalModel:
         return mahalanobis.reshape(feature_image.shape[:2])
 
 
-def update_samples(old_samples, new_samples, update_ratio):
+def update_samples(old_samples, new_samples, update_ratio, mode):
     """Update samples with a certain amount of new samples
 
     :param old_samples: The current set of samples.
@@ -163,10 +172,32 @@ def update_samples(old_samples, new_samples, update_ratio):
 
     :return The updated set of samples.
     """
+    mode = mode.lower()
+    if mode == "basic":
+        basic, random, shuffle = True, False, False
+    elif mode == "random":
+        basic, random, shuffle = False, True, False
+    elif mode == "shuffle":
+        basic, random, shuffle = False, False, True
+    else:
+        raise ValueError("Invalid mode. Must be 'basic', 'random', or 'shuffle'.")
 
     # TODO 3: Implement a random update of samples given the ratio of new_samples
     #old_samples = new_samples
-    old_samples[:int(len(old_samples) * update_ratio)] = new_samples[:int(len(new_samples) * update_ratio)]
+    if basic: 
+        old_samples[:int(len(old_samples) * update_ratio)] = new_samples[:int(len(new_samples) * update_ratio)]
+
+    #Suggestion 1: You can for instance use numpy.random.rand to generate a vector of random numbers between 0 and 1 with the same number of rows as the samples. Replace columns for random numbers smaller than the update_ratio.
+    if random:
+        random_indices = np.random.rand(old_samples.shape[0]) < update_ratio
+        old_samples[random_indices] = new_samples[random_indices]
+
+    #Suggestion 2: Another approach is to use numpy.random.shuffle. By first shuffling both old_samples and new_samples you can update the first N columns of old_samples with the first N columns of new_samples. Here N should be determined based on the update_ratio.
+    if shuffle:
+        np.random.shuffle(old_samples)
+        np.random.shuffle(new_samples)
+        N = int(len(old_samples) * update_ratio)
+        old_samples[:N] = new_samples[:N]
 
 def perform_segmentation(distance_image, thresh, use_otsu, max_dist_value):
     """Segment the distance image by thresholding
