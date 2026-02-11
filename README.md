@@ -25,7 +25,7 @@ Please start the lab by going to the [first step](lab-guide/1-get-an-overview.md
 ```bash
 wget https://www.uio.no/studier/emner/matnat/its/TEK5030/v26/lectures/04-image-analysis/lab_04_videos.zip
 unzip lab_04_videos.zip
-rm lab04_videos.zip
+rm lab_04_videos.zip
 ```
 
 [TEK5030]: https://www.uio.no/studier/emner/matnat/its/TEK5030/
