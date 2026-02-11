@@ -1,6 +1,7 @@
 # Import libraries
 import cv2
 import numpy as np
+from scipy.spatial import distance
 
 # Import common lab functions.
 from common_lab_utils import SegmentationLabGui, \
@@ -19,6 +20,11 @@ def run_segmentation_lab():
     # Connect to the camera.
     # Change to video file if you want to use that instead.
     video_source = 0
+    #video_source = "lab_11_videos/Sekvens1uc.avi"
+    #video_source = "lab_11_videos/Sekvens2uc.avi"
+    #video_source = "lab_11_videos/Sekvens3uc.avi"
+    #video_source = "lab_11_videos/Sekvens4uc.avi"
+    
     cap = cv2.VideoCapture(video_source)
     if not cap.isOpened():
         print(f"Could not open video source {video_source}")
@@ -113,8 +119,8 @@ class MultivariateNormalModel:
         """Trains the model"""
 
         # TODO 1.1: Train the multivariate normal model by estimating the mean and covariance given the samples.
-        self._mean = np.ones(samples.shape[1])                      # Dummy solution, replace
-        self._covariance = np.identity(samples.shape[1])            # Dummy solution, replace
+        self._mean = np.mean(samples, axis=0)
+        self._covariance = np.cov(samples.T)
 
         # We are going to compute the inverse of the estimated covariance,
         # so we must ensure that the matrix is indeed invertible (not singular).
@@ -123,7 +129,7 @@ class MultivariateNormalModel:
             self._covariance = self._covariance + np.identity(self._covariance.shape[0]) * 1.e-6
 
         # TODO 1.2: Compute the inverse of the estimated covariance.
-        self._inverse_covariance = np.identity(samples.shape[1])    # Dummy solution, replace
+        self._inverse_covariance = np.linalg.inv(self._covariance)
 
     def compute_mahalanobis_distances(self, feature_image):
         """Computes the Mahalanobis distances for a feature image given this model"""
@@ -132,6 +138,11 @@ class MultivariateNormalModel:
 
         # TODO 2: Compute the mahalanobis distance for each pixel feature vector wrt the multivariate normal model.
         mahalanobis = np.inf * np.ones(samples.shape[0])            # Dummy solution, replace
+
+        # manually
+        #mahalanobis = np.sqrt(np.sum((samples - self._mean) @ self._inverse_covariance * (samples - self._mean), axis=1)) 
+        # or with scipy
+        mahalanobis = distance.cdist(samples, self._mean[None], metric='mahalanobis', VI=self._inverse_covariance).flatten()
 
         return mahalanobis.reshape(feature_image.shape[:2])
 
