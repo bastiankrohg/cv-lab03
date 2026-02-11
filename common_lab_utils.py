@@ -12,8 +12,10 @@ class SegmentationLabGui:
         :param max_thresh_val: Maximum value for the threshold slider.
         """
         # Create windows.
+        self.frame_win = 'Frame'
         self.segm_win = 'Segmented frame'
         self.maha_win = 'Mahalanobis image'
+        cv2.namedWindow(self.frame_win, cv2.WINDOW_NORMAL)
         cv2.namedWindow(self.segm_win, cv2.WINDOW_NORMAL)
         cv2.namedWindow(self.maha_win, cv2.WINDOW_NORMAL)
 
@@ -31,6 +33,7 @@ class SegmentationLabGui:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Destroys the GUI"""
+        cv2.destroyWindow(self.frame_win)
         cv2.destroyWindow(self.segm_win)
         cv2.destroyWindow(self.maha_win)
 
@@ -46,12 +49,16 @@ class SegmentationLabGui:
         cv2.setTrackbarPos(self.slider, self.segm_win, self._thresh_val)
 
     def show_frame(self, frame_img):
-        """Show an image in the "Segmented frame" window"""
-        cv2.imshow(self.segm_win, frame_img)
+        """Show an image in the "Frame" window"""
+        cv2.imshow(self.frame_win, frame_img)
 
     def show_mahalanobis(self, mahalanobis_img):
         """Show an image in the "Mahalanobis image" window"""
         cv2.imshow(self.maha_win, mahalanobis_img)
+
+    def show_segmented(self, segmented_img):
+        """Show an image in the "Segmented frame" window"""
+        cv2.imshow(self.segm_win, segmented_img)
 
     def wait_key(self, time_ms):
         """Runs the highgui event loop and receives keypress events"""

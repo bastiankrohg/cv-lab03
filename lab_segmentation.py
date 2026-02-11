@@ -26,9 +26,9 @@ def run_segmentation_lab():
     # Connect to the camera.
     # Change to video file if you want to use that instead.
     #video_source = 0
-    #video_source = "lab_11_videos/Sekvens1uc.avi"
+    video_source = "lab_11_videos/Sekvens1uc.avi"
     #video_source = "lab_11_videos/Sekvens2uc.avi"
-    video_source = "lab_11_videos/Sekvens3uc.avi"
+    #video_source = "lab_11_videos/Sekvens3uc.avi"
     #video_source = "lab_11_videos/Sekvens4uc.avi"
 
     # if Windows machine
@@ -94,6 +94,7 @@ def run_segmentation_lab():
             # Show the results
             gui.show_frame(frame)
             gui.show_mahalanobis(mahalanobis_img)
+            gui.show_segmented(segmented)
 
             # Update the GUI and wait a short time for input from the keyboard.
             key = gui.wait_key(1)
@@ -222,6 +223,26 @@ def perform_segmentation(distance_image, thresh, use_otsu, max_dist_value):
     thresh_scaled, segmented_image = cv2.threshold(distances_scaled, thresh_scaled, 255, thresh_type)
 
     # TODO 4: Add morphological operations to reduce noise, and other fancy segmentation approaches.
+    kernel = np.ones((3, 3), np.uint8)
+    #kernel = np.ones((5, 5), np.uint8) # does it make a difference to have a larger kernel?
+    
+    # Opening (erosion followed by dilation) can help remove small noise in the segmented image.
+    segmented_image = cv2.morphologyEx(segmented_image, cv2.MORPH_OPEN, kernel, iterations=1)
+
+    #print(segmented_image.dtype) # should be uint8, but is uint16
+    # convert to uint8 to be able to use the connectedComponents function
+    segmented_image = np.uint8(segmented_image)
+
+    # Closing (dilation followed by erosion) can help fill small holes in the segmented areas.
+    # segmented_image = cv2.morphologyEx(segmented_image, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+    # Gradient - did not work well for road application haha
+    # segmented_image = cv2.morphologyEx(segmented_image, cv2.MORPH_GRADIENT, kernel, iterations=1, dst=segmented_image)
+
+    # Connected component analysis cv::connectedComponentsWithStats can be used to identify the largest connected component in the binary image and remove the smaller ones.
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(segmented_image, connectivity=8)
+    largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA]) # skip the background label 0
+    segmented_image[labels != largest_label] = 0 # remove the other ones
 
     # Return updated threshold (from Otsu's) and segmented image.
     return round(thresh_scaled / scale), np.uint8(segmented_image)
