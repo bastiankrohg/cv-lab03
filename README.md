@@ -23,11 +23,11 @@ Please start the lab by going to the [first step](lab-guide/1-get-an-overview.md
 ##### &ast; Download videos using terminal
 <a name="terminal"></a>
 ```bash
-wget https://www.uio.no/studier/emner/matnat/its/TEK5030/v19/resurser/lab_11_videos.zip
-unzip lab_11_videos.zip
-rm lab_11_videos.zip
+wget https://www.uio.no/studier/emner/matnat/its/TEK5030/v26/lectures/04-image-analysis/lab_04_videos.zip
+unzip lab_04_videos.zip
+rm lab04_videos.zip
 ```
 
 [TEK5030]: https://www.uio.no/studier/emner/matnat/its/TEK5030/
-[videos]: https://www.uio.no/studier/emner/matnat/its/TEK5030/v19/resurser/lab_11_videos.zip
+[videos]: https://www.uio.no/studier/emner/matnat/its/TEK5030/v26/lectures/04-image-analysis/lab_04_videos.zip
 [the intro lab]: https://github.com/tek5030/lab-intro/blob/master/py/lab-guide/1-open-project-in-pycharm.md
