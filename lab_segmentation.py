@@ -166,7 +166,7 @@ def update_samples(old_samples, new_samples, update_ratio):
 
     # TODO 3: Implement a random update of samples given the ratio of new_samples
     #old_samples = new_samples
-    old_samples[len(old_samples) * update_ratio] = new_samples[len(new_samples) * update_ratio]
+    old_samples[:int(len(old_samples) * update_ratio)] = new_samples[:int(len(new_samples) * update_ratio)]
 
 def perform_segmentation(distance_image, thresh, use_otsu, max_dist_value):
     """Segment the distance image by thresholding
