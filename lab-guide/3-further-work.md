@@ -140,6 +140,14 @@ Here are some suggested applications:
 - Detect the road in the supplied videos and estimate a line in the image you should follow to keep on the road.
 
 
+### D. Experiment with Segment Anything (SAM)
+The Segment Anything Model (SAM) represents a shift toward ["foundation models"] in computer vision. 
+Developed by Meta AI, it can detect, segment, and track objects using text or visual prompts.
+- Explore the [SAM demos] and test different types of interactive prompting (points, boxes, and text).
+- Clone the [SAM repository] and follow the setup instructions to run inference on your own images.
+- What are your impressions of the model’s performance on complex boundaries or low-contrast objects?
+- How does this impact applications of segmentation compared to the methods we have looked at so far?
+
 [numpy.random.rand]: https://numpy.org/doc/stable/reference/random/generated/numpy.random.rand.html
 [numpy.random.shuffle]: https://numpy.org/doc/stable/reference/random/generated/numpy.random.shuffle.html
 [sklearn.mixture.GaussianMixture]: https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html
@@ -152,3 +160,7 @@ Here are some suggested applications:
 [Contours: Getting Started]: https://docs.opencv.org/4.9.0/d4/d73/tutorial_py_contours_begin.html
 [Contour Features]: https://docs.opencv.org/4.9.0/dd/d49/tutorial_py_contour_features.html
 [Contour Properties]: https://docs.opencv.org/4.9.0/d1/d32/tutorial_py_contour_properties.html
+
+["foundation models"]: https://en.wikipedia.org/wiki/Foundation_model
+[SAM demos]: https://segment-anything.com/
+[SAM repository]: https://github.com/facebookresearch/sam3
