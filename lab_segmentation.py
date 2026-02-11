@@ -19,12 +19,14 @@ def run_segmentation_lab():
 
     # Connect to the camera.
     # Change to video file if you want to use that instead.
-    video_source = 0
+    #video_source = 0
     #video_source = "lab_11_videos/Sekvens1uc.avi"
     #video_source = "lab_11_videos/Sekvens2uc.avi"
     #video_source = "lab_11_videos/Sekvens3uc.avi"
-    #video_source = "lab_11_videos/Sekvens4uc.avi"
-    
+    video_source = "lab_11_videos/Sekvens4uc.avi"
+
+    # if Windows machine
+    #cap = cv2.VideoCapture(video_source, cv2.CAP_DSHOW)
     cap = cv2.VideoCapture(video_source)
     if not cap.isOpened():
         print(f"Could not open video source {video_source}")
@@ -48,6 +50,11 @@ def run_segmentation_lab():
     # Set up a simple gui for the lab (based on OpenCV highgui) and run the main loop.
     with SegmentationLabGui(initial_thresh_val, max_distance) as gui:
         while True:
+
+            # loop video and restart if we reach the end
+            if cap.get(cv2.CAP_PROP_POS_FRAMES) >= cap.get(cv2.CAP_PROP_FRAME_COUNT):
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
             # Read next frame.
             success, frame = cap.read()
             if not success:
@@ -158,8 +165,8 @@ def update_samples(old_samples, new_samples, update_ratio):
     """
 
     # TODO 3: Implement a random update of samples given the ratio of new_samples
-    old_samples = new_samples
-
+    #old_samples = new_samples
+    old_samples[len(old_samples) * update_ratio] = new_samples[len(new_samples) * update_ratio]
 
 def perform_segmentation(distance_image, thresh, use_otsu, max_dist_value):
     """Segment the distance image by thresholding
