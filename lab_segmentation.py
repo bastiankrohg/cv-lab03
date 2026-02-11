@@ -28,8 +28,8 @@ def run_segmentation_lab():
     #video_source = 0
     #video_source = "lab_11_videos/Sekvens1uc.avi"
     #video_source = "lab_11_videos/Sekvens2uc.avi"
-    #video_source = "lab_11_videos/Sekvens3uc.avi"
-    video_source = "lab_11_videos/Sekvens4uc.avi"
+    video_source = "lab_11_videos/Sekvens3uc.avi"
+    #video_source = "lab_11_videos/Sekvens4uc.avi"
 
     # if Windows machine
     #cap = cv2.VideoCapture(video_source, cv2.CAP_DSHOW)
