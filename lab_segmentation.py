@@ -260,6 +260,21 @@ def extract_features(feature_image):
     feature_image = np.float32(feature_image) / 255.0
 
     # TODO 5: Extract other/more features for each pixel.
+    # Try changing the color representation of the image from RGB to some other color space. Does it make any difference for the segmentation? (I like YCrCb).
+    feature_image = cv2.cvtColor(feature_image, cv2.COLOR_BGR2YCrCb)
+
+    """
+    Take a look at cv::cvtColor.
+
+    Try using more than 3 features per pixel.
+
+    Measures of local uniformity
+    Local standard deviation
+    Local entropy
+    Other ideas?
+    """
+    
+
     return feature_image
 
 
